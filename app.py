@@ -17,7 +17,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from data.prices import get_crop_prices
 from agents.analyst import calculate_profit
 from agents.logistics import find_driver
-from agents.communicator import generate_message
+from agents.communicator import generate_message, send_whatsapp_message
 
 # PAGE CONFIG
 st.set_page_config(page_title="Invisible Harvest", page_icon="🌾")
@@ -88,3 +88,11 @@ if 'analysis' in st.session_state and st.session_state['analysis']['is_profitabl
     if st.button("Reply 'YES' to Book"):
         st.balloons()
         st.success(f"CONFIRMED: Driver {logistics['driver_name']} is on the way!")
+        
+        with st.spinner("Sending WhatsApp Confirmation..."):
+            status = send_whatsapp_message(msg)
+            
+        if "Error" in status:
+            st.warning(f"Twilio Status: {status}")
+        else:
+            st.success(f"Twilio Status: {status}")
